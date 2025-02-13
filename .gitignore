@@ -398,3 +398,43 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+bin/
+obj/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# StyleCop
+StyleCopReport.xml
+
+# Files built by Visual Studio
+.vs/
+*.dbmdl
+*.dbproj.schemaview
+*.pfx
+*.publishsettings
+*.nupkg
+*.snk
+*.psess
+*.vsp
+*.vspx
+*.userprefs
+*.opendb
+
+# Mac files
+.DS_Store
+
+# Xcode files
+*.xcconfig
+*.xcsettings
+*.xcodeproj
+*.xccheckout
+*.xcuserstate
+*.xcworkspace
+*.xcuserdatad
+*.xcuserdata

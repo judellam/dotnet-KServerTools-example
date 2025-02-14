@@ -432,9 +432,7 @@ StyleCopReport.xml
 # Xcode files
 *.xcconfig
 *.xcsettings
-*.xcodeproj
 *.xccheckout
 *.xcuserstate
-*.xcworkspace
 *.xcuserdatad
 *.xcuserdata

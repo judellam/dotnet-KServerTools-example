@@ -26,6 +26,8 @@ struct LoginView: View {
                 .padding(.horizontal)
 
             Button("Login") {
+                authManager.isLoggedIn = false
+                authManager.token = nil
                 Task {
                     await login()
                 }

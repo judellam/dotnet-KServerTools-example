@@ -7,6 +7,12 @@
 
 import Foundation
 
+enum NetworkError: Error {
+    case unauthorized  // 401
+    case forbidden     // 403
+    case unknown
+}
+
 class NetworkHelper {
     static func getRequest<T:Decodable>(url: String, _ headers: [String:String]? = nil) async throws -> T {
         let request = try createRequest(url: url, "GET", headers)
@@ -16,9 +22,7 @@ class NetworkHelper {
             throw URLError(.badServerResponse)
         }
         
-        guard (200...299).contains(httpResponse.statusCode) else {
-            throw URLError(.unknown)
-        }
+        try handleResponse(httpResponse)
                 
         return try JSONDecoder().decode(T.self, from: data)
     }
@@ -33,9 +37,7 @@ class NetworkHelper {
             throw URLError(.badServerResponse)
         }
         
-        guard (200...299).contains(httpResponse.statusCode) else {
-            throw URLError(.unknown)
-        }
+        try handleResponse(httpResponse)
         
         return try JSONDecoder().decode(T.self, from: data)
     }
@@ -44,6 +46,22 @@ class NetworkHelper {
         return [Constants.AuthorizationHeader: "Bearer \(token)"]
     }
     
+    private static func handleResponse(_ response: URLResponse) throws {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+                
+        if httpResponse.statusCode == 401 {
+            throw NetworkError.unauthorized
+        } else if httpResponse.statusCode == 403 {
+            throw NetworkError.forbidden
+        }
+        
+        guard (200...202).contains(httpResponse.statusCode) else {
+            throw NetworkError.unknown
+        }
+    }
+        
     private static func createRequest(url: String, _ method: String, _ headers: [String:String]? = nil) throws -> URLRequest {
         guard let url = URL(string: url) else {
             throw URLError(.badURL)
@@ -56,8 +74,6 @@ class NetworkHelper {
         for (key, value) in headers {
             request.addValue(value, forHTTPHeaderField: key)
         }
-        
-        //request.addValue(Constants.UserAgentHeader, forHTTPHeaderField: Constants.UserAgentApp)
         
         return request
     }

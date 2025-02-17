@@ -95,6 +95,20 @@ internal class UserSqlRepository(ISqlServerService<UserDatabaseSqlServerConfigur
         }
     }
 
+    public async Task<IEnumerable<UserEntity>> GetMultipleAsync(AllUserLookup lookup, CancellationToken cancellationToken) {
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        try {
+            using UserDbContext context = await this.GetUserDbContext(cancellationToken)
+                .ConfigureAwait(false);
+
+            return await context.Users
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+        } finally {
+            this.logger.Info("End get multiple request", stopwatch.ElapsedMilliseconds);
+        }
+    }
+
     private async Task<UserDbContext> GetUserDbContext(CancellationToken cancellationToken) => 
         await UserDbContext.CreateDbContext(this.userDatabaseService, cancellationToken).ConfigureAwait(false);
 }

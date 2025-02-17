@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using KServerTools.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server.Components;
 using server.Models;
@@ -35,6 +36,20 @@ public class UserController(IUserComponent userComponent, IJsonLogger logger) : 
             return Ok(registeredUser);
         } finally {
             this.logger.Info("End login request", stopwatch.ElapsedMilliseconds);
+        }
+    }
+
+    [HttpGet]
+    [Route("all")]
+    [Authorize]
+    public async Task<ActionResult<User[]>> GetAllUsers(CancellationToken cancellationToken) {
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        try {
+            this.logger.Info("Get all users request");
+            User[] users = await this.userComponent.GetAllUsers(cancellationToken);
+            return Ok(users);
+        } finally {
+            this.logger.Info("End get all users request", stopwatch.ElapsedMilliseconds);
         }
     }
 }

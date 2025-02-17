@@ -7,7 +7,9 @@ namespace server.Models;
 /// </summary>
 public record User(
     [property:JsonPropertyName("userName")] string Username, 
-    [property:JsonPropertyName("password")] string Password);
+    [property:JsonPropertyName("password")] string Password) {
+    [property:JsonPropertyName("email")] public string? Email { get; set; } = null;
+}
 
 /// <summary>
 /// External model for user login response

@@ -19,8 +19,10 @@ public record UserEntity(string Username, string Email, byte[] Hash, byte[] Salt
 /// </summary>
 public record UserEntityLookup(string Username) : IEntityLookup;
 
+public record AllUserLookup() : IEntityLookup;
+
 /// <summary>
 /// The User Repository.
 /// </summary>
-public interface IUserRepository : IRepository<UserEntity, UserEntityLookup> {
+public interface IUserRepository : IRepository<UserEntity, UserEntityLookup>, IGetMultiple<UserEntity, AllUserLookup> {
 }

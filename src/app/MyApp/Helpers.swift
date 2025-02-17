@@ -16,15 +16,20 @@ enum NetworkError: Error {
 class NetworkHelper {
     static func getRequest<T:Decodable>(url: String, _ headers: [String:String]? = nil) async throws -> T {
         let request = try createRequest(url: url, "GET", headers)
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw URLError(.badServerResponse)
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw URLError(.badServerResponse)
+            }
+            
+            try handleResponse(httpResponse)
+            
+            return try JSONDecoder().decode(T.self, from: data)
+        } catch {
+            print ("Error: \(error)")
+            throw error
         }
-        
-        try handleResponse(httpResponse)
-                
-        return try JSONDecoder().decode(T.self, from: data)
     }
     
     static func postRequest<T: Decodable>(url: String, _ body: Encodable, _ headers: [String:String]? = nil) async throws -> T {

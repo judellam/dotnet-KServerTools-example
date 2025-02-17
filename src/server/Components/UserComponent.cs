@@ -56,6 +56,19 @@ public class UserComponent(IUserRepository userRepository, IJsonLogger logger) :
         return user;
     }
 
+    public async Task<User[]> GetAllUsers(CancellationToken cancellationToken) {
+        try {
+            IEnumerable<UserEntity> users = await userRepository.GetMultipleAsync(new AllUserLookup(), cancellationToken)
+                .ConfigureAwait(false);
+
+            return [..users.Select(user => new User(user.Username, string.Empty) {
+                Email = user.Email
+            })];
+        } catch (Exception ex){
+            throw new InternalServerErrorException("Unable to query for all users.", ex);
+        }
+    }
+
     private static (byte[] hash, byte[] salt) GetPasswordHash(string password) {
         int saltSize = 256;
         byte[] initialSalt = new byte[saltSize];

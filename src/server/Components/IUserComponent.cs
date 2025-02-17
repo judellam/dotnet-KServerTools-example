@@ -15,4 +15,9 @@ public interface IUserComponent {
     /// Registers a new user.
     /// </summary>
     public Task<RegisterUser> Register(RegisterUser user, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Get all the users in the database.
+    /// </summary>
+    public Task<User[]> GetAllUsers(CancellationToken cancellationToken);
 }
